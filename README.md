@@ -4,6 +4,8 @@ Web-API for [browserleaks.com](https://browserleaks.com/) a suite of tools that 
 ## Example
 ```cr
 require "./browser_leaks"
-ip_info = BrowserLeaks.get_ip_info("192.168.1.1")
+
+browser_leaks = BrowserLeaks.new
+ip_info = browser_leaks.get_ip_info("192.168.1.1")
 puts ip_info
 ```
