@@ -1,25 +1,24 @@
+require "json"
 require "http/client"
 
-module BrowserLeaks
-  API_URL = "https://browserleaks.com/api"
-  IP_API_URL  = "https://rdap.db.ripe.net/ip"
+class BrowserLeaks
+  API_URL = "https://browserleaks.com"
+  IP_API_URL = "https://rdap.db.ripe.net/ip"
 
-  private def self.get(url : String) : String
-    response = HTTP::Client.get(url)
-    if response.status.success?
-      response.body
-    else
-      "Error: #{response.status_code}"
-    end
-  rescue ex
-    "Request failed: #{ex.message}"
+  def initialize
+    @headers = HTTP::Headers{
+      "Content-Type" => "application/json",
+      "Accept" => "application/json",
+      "User-Agent" => "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36"
+    }
   end
 
-  def self.get_ip_hostname(ip : String) : String
-    get("#{API_URL}/hostname/#{ip}")
+  def get_ip_hostname(ip : String) : JSON::Any
+    JSON.parse(
+      HTTP::Client.get("#{API_URL}/api/hostname/#{ip}", headers: @headers).body)
   end
 
-  def self.get_ip_info(ip : String) : String
-    get("#{IP_API_URL}/#{ip}")
+  def get_ip_info(ip : String) : String
+    HTTP::Client.get("#{IP_API_URL}/#{ip}", headers: @headers).body
   end
 end
